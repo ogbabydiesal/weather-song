@@ -19,10 +19,13 @@ audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 // create Oscillator node
 const oscillator = audioCtx.createOscillator();
+const gainNode = audioCtx.createGain();
+gainNode.gain.setValueAtTime(0.35, audioCtx.currentTime); // set initial gain to 0
 
-oscillator.type = "square";
+oscillator.type = "triangle";
 oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime); // value in hertz
-oscillator.connect(audioCtx.destination);
+oscillator.connect(gainNode);
+gainNode.connect(audioCtx.destination);
 oscillator.start();
 
 function sonify(){
