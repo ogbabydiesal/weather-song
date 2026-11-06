@@ -1,18 +1,7 @@
 //define variable for our location
-let locationField;
-
 let audioCtx;
 
 let freq = 0;
-
-let infoField;
-
-//wait until html document is loaded so that we can access the keyboard input field
-document.addEventListener('DOMContentLoaded', function(event) { 
-  //locationField = document.getElementById("location");
-  locationField = document.querySelector("#location");
-  infoField = document.getElementById('info');
-})
 
 // create web audio api context
 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -31,27 +20,31 @@ oscillator.connect(gainNode);
 gainNode.connect(audioCtx.destination);
 oscillator.start();
 
-
-function sonify(){
-  console.log(locationField.value);  
-  fetch('https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/'+locationField.value +'?key=YH5QF5SWJL5LZ8SFPZFT2RCC2')
-  .then(response => response.json())
-  .then(response => {
-    console.log(response);
-    console.log("the weather over the next few days is:" + response.days[0].temp + " " + response.days[1].temp + " " + response.days[2].temp);
-    console.log("the wind gust over the next few days is:" + response.days[0].windgust + " " + response.days[1].windgust + " " + response.days[2].windgust);
-    freq = response.days[0].temp * 2; console.log(freq / 2); 
+async function sonify() {
+  audioCtx.resume();
+  console.log(locale.value); 
+  const url = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/" + locale.value + "?key=YH5QF5SWJL5LZ8SFPZFT2RCC2";
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+    const result = await response.json();
+    console.log(result);
+    console.log("the weather over the next few days is:" + result.days[0].temp + " " + result.days[1].temp + " " + result.days[2].temp);
+    console.log("the wind gust over the next few days is:" + result.days[0].windgust + " " + result.days[1].windgust + " " + result.days[2].windgust);
+    freq = result.days[0].temp * 2; console.log(freq / 2); 
     oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime); 
-    audioCtx.resume();
-    infoField.innerHTML = "the weather in " + locationField.value + " is " + response.days[0].temp
-    if (response.days[0].temp < 60) {
-      infoField.innerHTML += " ❄️"
+    info.innerHTML = "the weather in " + locale.value + " is " + result.days[0].temp
+    if (result.days[0].temp < 60) {
+      info.innerHTML += " ❄️"
     }
     else {
-      infoField.innerHTML += " ☀️"
+      info.innerHTML += " ☀️"
     }
-  })
-  .catch(err => console.error(err));
+  } catch (error) {
+    console.error(error.message);
+  }
 }
 
 function stop(){
