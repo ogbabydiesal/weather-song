@@ -18,12 +18,13 @@ oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime); // value in her
 //connect it all together
 oscillator.connect(gainNode);
 gainNode.connect(audioCtx.destination);
-oscillator.start();
+
 
 async function sonify() {
   audioCtx.resume();
+  oscillator.start();
   console.log(locale.value); 
-  const url = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/" + locale.value + "?key=YH5QF5SWJL5LZ8SFPZFT2RCC2";
+  const url = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/" + locale.value
   try {
     const response = await fetch(url);
     if (!response.ok) {
