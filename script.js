@@ -31,9 +31,10 @@ async function sonify() {
     }
     const result = await response.json();
     console.log(result);
-    console.log("the weather over the next few days is:" + result.days[0].temp + " " + result.days[1].temp + " " + result.days[2].temp);
-    console.log("the wind gust over the next few days is:" + result.days[0].windgust + " " + result.days[1].windgust + " " + result.days[2].windgust);
-    freq = result.days[0].temp * 2; console.log(freq / 2); 
+    // console.log("the weather over the next few days is:" + result.days[0].temp + " " + result.days[1].temp + " " + result.days[2].temp);
+    // console.log("the wind gust over the next few days is:" + result.days[0].windgust + " " + result.days[1].windgust + " " + result.days[2].windgust);
+    freq = result.days[0].temp * 2; 
+    console.log(freq / 2); 
     oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime); 
     info.innerHTML = "the weather in " + locale.value + " is " + result.days[0].temp
     if (result.days[0].temp < 60) {
